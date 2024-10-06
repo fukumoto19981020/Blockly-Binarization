@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello World with Variables in Blockly</title>
+  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    #blocklyDiv {
+      height: 480px;
+      width: 600px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Blockly: Hello + World with Variables</h1>
+  <div id="blocklyDiv"></div>
+  <button onclick="runCode()">Run</button>
+
+  <script>
+    // Blocklyワークスペースの初期化
+    var workspace = Blockly.inject('blocklyDiv', {
+      toolbox: `<xml>
+                <!-- 変数ブロック -->
+                <category name="Variables" custom="VARIABLE"></category>
+                <!-- テキスト関連ブロックカテゴリ -->
+                <category name="Text">
+                  <block type="text"></block> <!-- テキスト入力用ブロック -->
+                  <block type="text_join"></block> <!-- 文字列を結合するブロック -->
+                  <block type="text_print"></block> <!-- コンソールに表示するブロック -->
+                </category>
+              </xml>`
+    });
+
+    // BlocklyのJavaScriptジェネレーターを使って生成したコードを実行
+    function runCode() {
+      var code = Blockly.JavaScript.workspaceToCode(workspace);
+      console.log(code); // 生成されたコードを確認するためにコンソールに表示
+      try {
+        eval(code);
+      } catch (e) {
+        console.log("Error in code: " + e);
+      }
+    }
+  </script>
+</body>
+</html>

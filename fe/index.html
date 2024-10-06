@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Blockly Custom Block</title>
+<!-- Load Blockly core -->
+<script src="https://unpkg.com/blockly/blockly_compressed.js"></script>
+<!-- Load the default blocks -->
+<script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
+<!-- Load a generator -->
+<script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
+<!-- Load a message file -->
+<script src="https://unpkg.com/blockly/msg/en.js"></script>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    #blocklyDiv {
+      height: 480px;
+      width: 600px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Blockly: Simple Custom Block Example</h1>
+  <div id="blocklyDiv"></div>
+  <button onclick="runCode()">Run</button>
+
+  <script>
+    
+Blockly.Blocks['string_length'] = {
+  init: function() {
+    this.appendValueInput('VALUE')
+        .setCheck('String')
+        .appendField('length of');
+    this.setOutput(true, 'Number');
+    this.setColour(160);
+    this.setTooltip('Returns number of letters in the provided text.');
+    this.setHelpUrl('http://www.w3schools.com/jsref/jsref_length_string.asp');
+  }
+};
+
+javascript.javascriptGenerator.forBlock['text_length'] = function(block, generator) {
+  // String or array length.
+  var argument0 = generator.valueToCode(block, 'VALUE', Order.FUNCTION_CALL) || '\'\'';
+  return [argument0 + '.length', Order.MEMBER];
+};
+    // Blocklyワークスペースの初期化
+    var workspace = Blockly.inject('blocklyDiv', {
+      toolbox: `<xml>
+                <block type="string_length"></block>
+              </xml>`
+    });
+
+    // コードを実行する関数
+    function runCode() {
+      var code = Blockly.JavaScript.workspaceToCode(workspace);
+      console.log(code);  // 生成されたコードを確認
+      try {
+        eval(code);  // 生成されたコードを実行
+      } catch (e) {
+        console.log("Error: " + e);  // エラーがあれば表示
+      }
+    }
+  </script>
+</body>
+</html>
