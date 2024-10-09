@@ -6,7 +6,7 @@ Blockly.Blocks['debug_probe'] = {
     this.setOutput(true);  // 出力を持つ
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(230);
+    this.setColour(70);
     this.setTooltip('前段の出力を確認し、次のブロックに転送します');
   }
 };
