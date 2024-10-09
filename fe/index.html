@@ -1,70 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple Blockly Custom Block</title>
-<!-- Load Blockly core -->
-<script src="https://unpkg.com/blockly/blockly_compressed.js"></script>
-<!-- Load the default blocks -->
-<script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
-<!-- Load a generator -->
-<script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
-<!-- Load a message file -->
-<script src="https://unpkg.com/blockly/msg/en.js"></script>
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-    #blocklyDiv {
-      height: 480px;
-      width: 600px;
-    }
-  </style>
-</head>
-<body>
-  <h1>Blockly: Simple Custom Block Example</h1>
-  <div id="blocklyDiv"></div>
-  <button onclick="runCode()">Run</button>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Blockly Custom Block Example</title>
+    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
 
-  <script>
-    
-Blockly.Blocks['string_length'] = {
-  init: function() {
-    this.appendValueInput('VALUE')
-        .setCheck('String')
-        .appendField('length of');
-    this.setOutput(true, 'Number');
-    this.setColour(160);
-    this.setTooltip('Returns number of letters in the provided text.');
-    this.setHelpUrl('http://www.w3schools.com/jsref/jsref_length_string.asp');
-  }
-};
-
-javascript.javascriptGenerator.forBlock['text_length'] = function(block, generator) {
-  // String or array length.
-  var argument0 = generator.valueToCode(block, 'VALUE', Order.FUNCTION_CALL) || '\'\'';
-  return [argument0 + '.length', Order.MEMBER];
-};
-    // Blocklyワークスペースの初期化
-    var workspace = Blockly.inject('blocklyDiv', {
-      toolbox: `<xml>
-                <block type="string_length"></block>
-              </xml>`
-    });
-
-    // コードを実行する関数
-    function runCode() {
-      var code = Blockly.JavaScript.workspaceToCode(workspace);
-      console.log(code);  // 生成されたコードを確認
-      try {
-        eval(code);  // 生成されたコードを実行
-      } catch (e) {
-        console.log("Error: " + e);  // エラーがあれば表示
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
       }
-    }
-  </script>
-</body>
+      #blocklyDiv {
+        height: 480px;
+        width: 1200px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Blockly Custom Block Example</h1>
+
+    <!-- Blocklyのエリア -->
+    <div id="blocklyDiv"></div>
+
+    <!-- 実行ボタン -->
+    <button id="runCodeBtn">実行</button>
+
+    <!-- コード出力エリア -->
+    <p>コード出力エリア</p>
+    <pre id="generatedCode"></pre>
+
+    <!-- 画像表示エリア -->
+    <div id="imageContainer"></div>
+
+    <!-- ブロック import -->
+    <script src="blocks/file_input_block.js"></script>
+    <script src="blocks/binarization_block.js"></script>
+    <script src="blocks/threshold_input_block.js"></script>
+    <script src="blocks/debug_probe.js"></script>
+    <script src="blocks/debug_image_probe.js"></script>
+
+    <!-- Blockly Workspace初期化 -->
+    <script>
+      var workspace = Blockly.inject('blocklyDiv', {
+        toolbox: `
+          <xml id="toolbox" style="display: none">
+            <block type="text"></block>
+            <block type="file_input_block"></block>
+            <block type="binarization_block"></block>
+            <block type="threshold_input_block"></block>
+            <block type="debug_probe"></block>
+            <block type="debug_image_probe"></block>              
+          </xml>
+          `
+      });
+  
+      // 実行ボタンがクリックされたときにコードを実行
+      document.getElementById('runCodeBtn').addEventListener('click', async function() {
+        const imageContainer = document.getElementById('imageContainer');
+
+        // 新しい実行単位のdivを作成
+        const executionGroup = document.createElement('div');
+        executionGroup.style.display = 'flex';
+        executionGroup.style.flexWrap = 'wrap';
+        executionGroup.style.gap = '10px';  // 画像間のスペース
+        // imageContainerの最初に新しいdivを追加
+        imageContainer.insertBefore(executionGroup, imageContainer.firstChild);
+        
+        var code = Blockly.JavaScript.workspaceToCode(workspace);
+        document.getElementById('generatedCode').textContent = code;
+        try {
+          await eval('(async () => {' + code + '})()');  // 生成されたコードを評価（実行）する
+        } catch (e) {
+          console.error("Error evaluating generated code:", e);
+        }
+      });
+        
+    </script>
+  </body>
 </html>
